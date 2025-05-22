@@ -73,6 +73,10 @@ module.exports = function (eleventyConfig) {
                                 END PLUGINS
     =======================================================================*/
 
+    eleventyConfig.addCollection("featured", function (collectionApi) {
+        return collectionApi.getAll().filter(item => item.data.isFeatured === true);
+    });
+
     /**======================================================================
        PASSTHROUGHS - Copy source files to /public with no 11ty processing
     ========================================================================*/
