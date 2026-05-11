@@ -199,43 +199,6 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
     <!-- Uncomment the code below to enable Structured Data, and test it when you deploy to Netlify - https://developers.google.com/search/docs/appearance/structured-data -->
     <!-- {% include "components/home-schema.html" %} -->
 
-	<!-- Demo styles - Delete me!  -->
-	 <style>
-        #welcome {
-            padding: 100px 16px;
-        }
-        #welcome .cs-container {
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-        #welcome .cs-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        #welcome h1 {
-            margin-bottom: 24px;
-            font-size: clamp(2rem, 5vw, 3rem);
-        }
-        #welcome p {
-            margin-bottom: 16px;
-            font-size: 1.125rem;
-            line-height: 1.6;
-        }
-        #welcome code {
-            padding: 2px 8px;
-            background: #f4f4f4;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        #welcome a {
-            color: var(--primary);
-            text-decoration: underline;
-        }
-        #welcome a:hover {
-            opacity: 0.8;
-        }
-    </style>
 {% endblock %}
 
 {% block body %}
@@ -261,6 +224,76 @@ tags: "sitemap" # content/content.json will make sure that all pages in content/
 
 	fs.writeFileSync(indexPath, content, "utf8");
 	console.log("Simplified src/index.html");
+}
+
+// ─── Simplify Critical SCSS ──────────────────────────────────────────────────
+
+function simplifyCriticalScss() {
+	console.log("\n--- Simplifying critical.scss ---\n");
+	const filePath = resolvePath("src/assets/sass/critical.scss");
+
+	const content = `// ─────────────────────────────────────────────────────────────────────────────
+// CRITICAL PAGE STYLES
+// Above-the-fold and high-priority styles for the home page's landing section.
+// Put the first section of the home page in here, so it loads immediately.
+// The rest of the home page styles in local.css will be deferred and
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Demo styles - Delete me!
+#welcome {
+    padding: 100px 16px;
+
+    .cs-container {
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+
+    .cs-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    h1 {
+        margin-bottom: 24px;
+        font-size: clamp(2rem, 5vw, 3rem);
+    }
+
+    p {
+        margin-bottom: 16px;
+        font-size: 1.125rem;
+        line-height: 1.6;
+    }
+
+    code {
+        padding: 2px 8px;
+        background: #f4f4f4;
+        border-radius: 4px;
+        font-family: monospace;
+    }
+
+    a {
+        color: var(--primary);
+        text-decoration: underline;
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+}
+`;
+
+	fs.writeFileSync(filePath, content, "utf8");
+	console.log("Simplified src/assets/sass/critical.scss");
+}
+
+// ─── Clear Local SCSS ─────────────────────────────────────────────────────────
+
+function clearLocalScss() {
+	console.log("\n--- Clearing local.scss ---\n");
+	const filePath = resolvePath("src/assets/sass/local.scss");
+	fs.writeFileSync(filePath, "", "utf8");
+	console.log("Cleared src/assets/sass/local.scss");
 }
 
 // ─── Update Header ───────────────────────────────────────────────────────────
@@ -358,6 +391,8 @@ async function main() {
 
 	// Update files
 	simplifyIndex();
+	simplifyCriticalScss();
+	clearLocalScss();
 	updateHeader();
 	updateFooter();
 
